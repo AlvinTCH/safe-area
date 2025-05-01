@@ -42,7 +42,7 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
             WindowCompat.setDecorFitsSystemWindows(activity.window, true)
         }
         activity.window.decorView.getRootView().setOnApplyWindowInsetsListener(null)
-        resetProperties()
+        activity.window.decorView.setPadding(0, 0, 0, 0)
 
         updateAppearance(appearanceConfig)
     }
@@ -64,8 +64,7 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
 
             if (appearanceConfig.customColorsForSystemBars) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                window.statusBarColor = Color.parseColor(appearanceConfig.statusBarColor)
-                window.navigationBarColor = Color.parseColor(appearanceConfig.navigationBarColor)
+                window.decorView.setBackgroundColor(Color.parseColor(appearanceConfig.backgroundColor))
             } else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             }
@@ -86,14 +85,13 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
 
             val density = activity.resources.displayMetrics.density
 
-            setProperty("top", Math.round(systemBarsInsets.top / density) + offset)
-            setProperty("left", Math.round(systemBarsInsets.left / density))
-            if (imeInsets.bottom > 0) {
-                setProperty("bottom", 0)
-            } else {
-                setProperty("bottom", Math.round(systemBarsInsets.bottom / density) + offset)
+            val topVal = Math.round(systemBarsInsets.top / density) + offset
+            val leftVal =  Math.round(systemBarsInsets.left / density)
+            val rightVal = Math.round(systemBarsInsets.right / density)
+            var bottomVal = 0
+            if (imeInsets.bottom == 0) {
+                bottomVal = Math.round(systemBarsInsets.bottom / density) + offset
             }
-            setProperty("right", Math.round(systemBarsInsets.right / density))
 
             // To get the actual height of the keyboard, we need to subtract the height of the system bars from the height of the ime
             // Source: https://stackoverflow.com/a/75328335/8634342
@@ -101,20 +99,7 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
 
             // Set padding of decorview so the scroll view stays correct.
             // Otherwise the content behind the keyboard cannot be viewed by the user.
-            activity.window.decorView.setPadding(0, 0, 0, imeHeight)
-        }
-    }
-
-    private fun resetProperties() {
-        setProperty("top", 0)
-        setProperty("left", 0)
-        setProperty("bottom", 0)
-        setProperty("right", 0)
-    }
-
-    private fun setProperty(position: String, size: Int) {
-        activity.runOnUiThread {
-            webView.loadUrl("javascript:document.querySelector(':root')?.style.setProperty('--safe-area-inset-" + position + "', 'max(env(safe-area-inset-" + position + "), " + size + "px)');void(0);")
+            activity.window.decorView.setPadding(leftVal, topVal, rightVal, bottomVal + imeHeight)
         }
     }
 }
