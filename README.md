@@ -1,6 +1,10 @@
-<p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
+> [!NOTE]
+> This is a fork for [@capacitor-community/safe-area](https://github.com/capacitor-community/safe-area) and is a proof of concept for come of the changes
+
+
+
 <h3 align="center">Safe Area</h3>
-<p align="center"><strong><code>@capacitor-community/safe-area</code></strong></p>
+<p align="center"><strong><code>@greytch/safe-area</code></strong></p>
 <p align="center">
   Capacitor Plugin that exposes the safe area insets from the native iOS/Android device to your web project.
 </p>
@@ -85,7 +89,7 @@ This plugin, therefore, also provides utilities for styling those system bars an
 ## Installation
 
 ```bash
-npm install @capacitor-community/safe-area
+npm install @greytch/safe-area
 npx cap sync
 ```
 
@@ -98,15 +102,13 @@ This plugin can be enabled either by using the API or by using the Configuration
 #### Enable by using the API
 
 ```ts
-import { SafeArea } from '@capacitor-community/safe-area';
+import { SafeArea } from '@greytch/safe-area';
 
 SafeArea.enable({
   config: {
     customColorsForSystemBars: true,
-    statusBarColor: '#00000000', // transparent
-    statusBarContent: 'light',
-    navigationBarColor: '#00000000', // transparent
-    navigationBarContent: 'light',
+    backgroundColor: '#00000000', // transparent
+    statusBarContent: 'light'
   },
 });
 ```
@@ -258,7 +260,7 @@ In `capacitor.config.json`:
 In `capacitor.config.ts`:
 
 ```ts
-/// <reference types="@capacitor-community/safe-area" />
+/// <reference types="@greytch/safe-area" />
 
 import { CapacitorConfig } from '@capacitor/cli';
 

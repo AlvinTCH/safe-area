@@ -1,6 +1,6 @@
 {
   "name": "@greytch/safe-area",
-  "version": "7.0.0-alpha.1",
+  "version": "7.0.2",
   "description": "Capacitor Plugin that exposes the safe area insets from the native iOS/Android device to your web project.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -17,10 +17,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/capacitor-community/safe-area.git"
+    "url": "git+https://github.com/AlvinTCH/safe-area.git"
   },
   "bugs": {
-    "url": "https://github.com/capacitor-community/safe-area/issues"
+    "url": "https://github.com/AlvinTCH/safe-area/issues"
   },
   "keywords": [
     "capacitor",
@@ -339,5 +339,5 @@
     "yauzl": "^2.10.0",
     "yocto-queue": "^0.1.0"
   },
-  "homepage": "https://github.com/capacitor-community/safe-area#readme"
+  "homepage": "https://github.com/AlvinTCH/safe-area#readme"
 }
