@@ -1,6 +1,6 @@
 {
   "name": "@greytch/safe-area",
-  "version": "7.0.8",
+  "version": "7.0.10",
   "description": "Capacitor Plugin that exposes the safe area insets from the native iOS/Android device to your web project.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
