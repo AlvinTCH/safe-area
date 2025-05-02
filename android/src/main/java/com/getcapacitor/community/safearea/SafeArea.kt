@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Build
 import android.view.WindowManager
 import android.webkit.WebView
+import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
@@ -97,10 +98,6 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
                 right = Math.round(systemBarsInsets.right / density) + offset
             )
 
-            // To get the actual height of the keyboard, we need to subtract the height of the system bars from the height of the ime
-            // Source: https://stackoverflow.com/a/75328335/8634342
-            val imeHeight = (imeInsets.bottom - systemBarsInsets.bottom).coerceAtLeast(0)
-
             // Set padding of decorview so the scroll view stays correct.
             // Otherwise the content behind the keyboard cannot be viewed by the user.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
@@ -108,9 +105,10 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
                     decorFitsSystemWindowsNegated = true
                     WindowCompat.setDecorFitsSystemWindows(activity.window, false)
                 }
-                setPropertyEdge(positionData, imeHeight)
+
+                setPropertyEdge(positionData)
             } else {
-                setProperty(positionData, imeHeight)
+                setProperty(positionData)
             }
         }
     }
@@ -122,15 +120,14 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
                 bottom = 0,
                 left = 0,
                 right = 0
-            ), 0
+            )
         )
     }
 
     private fun setPropertyEdge(
-        positionData: PositionData,
-        imeHeight: Int
+        positionData: PositionData
     ) {
-        activity.window.decorView.setPadding(positionData.left, positionData.top, positionData.right, positionData.bottom + imeHeight)
+        activity.window.decorView.setPadding(positionData.left, positionData.top, positionData.right, positionData.bottom)
     }
 
 
@@ -144,9 +141,8 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
 
     private fun setProperty(
         positionData: PositionData,
-        imeHeight: Int
     ) {
-        activity.window.decorView.setPadding(0, 0, 0, imeHeight)
+        activity.window.decorView.setPadding(0, 0, 0, 0)
         setJsProperty("top", positionData.top)
         setJsProperty("bottom", positionData.bottom)
         setJsProperty("left", positionData.left)
