@@ -17,7 +17,7 @@ export interface Config {
    * @example '#000000'
    * @default '#000000'
    */
-  backgroundColor?: string;
+  statusBarColor?: string;
   /**
    * Specifies the color of the content (i.e. icon color) in the status bar.
    *
@@ -25,6 +25,15 @@ export interface Config {
    * @default 'light'
    */
   statusBarContent?: 'light' | 'dark';
+  /**
+   * Specifies the background color of the navigation bar.
+   * Should be in the format `#RRGGBB` or `#AARRGGBB`.
+   * Will only have effect if `customColorsForSystemBars` is set to `true`.
+   *
+   * @example '#000000'
+   * @default '#000000'
+   */
+  navigationBarColor?: string;
   /**
    * Specifies the color of the content (i.e. icon color) in the navigation bar.
    *
@@ -68,14 +77,14 @@ declare module '@capacitor/cli' {
        */
       customColorsForSystemBars?: boolean;
       /**
-       * Specifies the background color.
+       * Specifies the background color of the status bar.
        * Should be in the format `#RRGGBB` or `#AARRGGBB`.
        * Will only have effect if `customColorsForSystemBars` is set to `true`.
        *
        * @example '#000000'
        * @default '#000000'
        */
-      backgroundColor?: string;
+      statusBarColor?: string;
       /**
        * Specifies the color of the content (i.e. icon color) in the status bar.
        *
@@ -83,6 +92,15 @@ declare module '@capacitor/cli' {
        * @default 'light'
        */
       statusBarContent?: 'light' | 'dark';
+      /**
+       * Specifies the background color of the navigation bar.
+       * Should be in the format `#RRGGBB` or `#AARRGGBB`.
+       * Will only have effect if `customColorsForSystemBars` is set to `true`.
+       *
+       * @example '#000000'
+       * @default '#000000'
+       */
+      navigationBarColor?: string;
       /**
        * Specifies the color of the content (i.e. icon color) in the navigation bar.
        *
