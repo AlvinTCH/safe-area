@@ -17,6 +17,8 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
     private var decorFitsSystemWindowsNegated = false
 
     fun enable(updateInsets: Boolean, appearanceConfig: AppearanceConfig) {
+        offset = appearanceConfig.offset
+        
         activity.window.decorView.getRootView().setOnApplyWindowInsetsListener { view, insets ->
             updateInsets()
             if (!appearanceUpdatedInListener) {
