@@ -2,8 +2,10 @@ package com.getcapacitor.community.safearea
 
 import android.app.Activity
 import android.graphics.Color
+import android.os.Build
 import android.view.WindowManager
 import android.webkit.WebView
+import androidx.annotation.RequiresApi
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -45,6 +47,7 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
         activity.window.decorView.setPadding(0, 0, 0, 0)
 
         updateAppearance(appearanceConfig)
+        resetProperties()
     }
 
     fun resetDecorFitsSystemWindows() {
@@ -64,7 +67,12 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
 
             if (appearanceConfig.customColorsForSystemBars) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                window.decorView.setBackgroundColor(Color.parseColor(appearanceConfig.backgroundColor))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                    window.decorView.setBackgroundColor(Color.parseColor(appearanceConfig.statusBarColor))
+                } else {
+                    window.statusBarColor = Color.parseColor(appearanceConfig.statusBarColor)
+                    window.navigationBarColor = Color.parseColor(appearanceConfig.navigationBarColor)
+                }
             } else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             }
@@ -85,13 +93,12 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
 
             val density = activity.resources.displayMetrics.density
 
-            val topVal = Math.round(systemBarsInsets.top / density) + offset
-            val leftVal =  Math.round(systemBarsInsets.left / density)
-            val rightVal = Math.round(systemBarsInsets.right / density)
-            var bottomVal = 0
-            if (imeInsets.bottom == 0) {
-                bottomVal = Math.round(systemBarsInsets.bottom / density) + offset
-            }
+            val positionData = PositionData(
+                top = Math.round(systemBarsInsets.top / density) + offset,
+                bottom = if (imeInsets.bottom == 0) Math.round(systemBarsInsets.bottom / density) + offset else 0,
+                left = Math.round(systemBarsInsets.left / density) + offset,
+                right = Math.round(systemBarsInsets.right / density) + offset
+            )
 
             // To get the actual height of the keyboard, we need to subtract the height of the system bars from the height of the ime
             // Source: https://stackoverflow.com/a/75328335/8634342
@@ -99,7 +106,49 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
 
             // Set padding of decorview so the scroll view stays correct.
             // Otherwise the content behind the keyboard cannot be viewed by the user.
-            activity.window.decorView.setPadding(leftVal, topVal, rightVal, bottomVal + imeHeight)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                setPropertyEdge(positionData, imeHeight)
+            } else {
+                setProperty(positionData, imeHeight)
+            }
         }
+    }
+
+    private fun resetProperties() {
+        setProperty(
+            PositionData(
+                top = 0,
+                bottom = 0,
+                left = 0,
+                right = 0
+            ), 0
+        )
+    }
+
+    private fun setPropertyEdge(
+        positionData: PositionData,
+        imeHeight: Int
+    ) {
+        activity.window.decorView.setPadding(positionData.left, positionData.top, positionData.right, positionData.bottom + imeHeight)
+    }
+
+
+    private fun setJsProperty(position: String, size: Int) {
+        activity.runOnUiThread {
+            webView.loadUrl(
+                "javascript:document.querySelector(':root')?.style.setProperty('--safe-area-inset-" + position + "', 'max(env(safe-area-inset-" + position + "), " + size + "px)');void(0);")
+        }
+    }
+
+
+    private fun setProperty(
+        positionData: PositionData,
+        imeHeight: Int
+    ) {
+        activity.window.decorView.setPadding(0, 0, 0, imeHeight)
+        setJsProperty("top", positionData.top)
+        setJsProperty("bottom", positionData.bottom)
+        setJsProperty("left", positionData.left)
+        setJsProperty("right", positionData.right)
     }
 }
