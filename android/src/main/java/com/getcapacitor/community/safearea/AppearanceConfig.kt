@@ -3,6 +3,7 @@ package com.getcapacitor.community.safearea
 import org.json.JSONObject
 
 class AppearanceConfig(fromJSONObject: JSONObject? = null) {
+    var offset: Int = 0
     var customColorsForSystemBars: Boolean = true
     var statusBarColor: String = "#000000"
     var statusBarContent: String = "light"
@@ -11,6 +12,10 @@ class AppearanceConfig(fromJSONObject: JSONObject? = null) {
 
     init {
         if (fromJSONObject != null) {
+            if (fromJSONObject.has("offset")) {
+                offset =
+                    fromJSONObject.optInt("offset", 0)
+            }
             if (fromJSONObject.has("customColorsForSystemBars")) {
                 customColorsForSystemBars =
                     fromJSONObject.optBoolean("customColorsForSystemBars", true)
