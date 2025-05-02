@@ -81,11 +81,6 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
 
     private fun updateInsets() {
         activity.runOnUiThread {
-            if (!decorFitsSystemWindowsNegated) {
-                decorFitsSystemWindowsNegated = true
-                WindowCompat.setDecorFitsSystemWindows(activity.window, false)
-            }
-
             val windowInsets = ViewCompat.getRootWindowInsets(activity.window.decorView)
             val systemBarsInsets =
                 windowInsets?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: Insets.NONE
@@ -107,6 +102,10 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
             // Set padding of decorview so the scroll view stays correct.
             // Otherwise the content behind the keyboard cannot be viewed by the user.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                if (!decorFitsSystemWindowsNegated) {
+                    decorFitsSystemWindowsNegated = true
+                    WindowCompat.setDecorFitsSystemWindows(activity.window, false)
+                }
                 setPropertyEdge(positionData, imeHeight)
             } else {
                 setProperty(positionData, imeHeight)
